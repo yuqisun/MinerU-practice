@@ -1,0 +1,41 @@
+# 信用证字段抽取配置。
+# 这份配置等价于原 schema.py 中的 LCFields + extract.py 里的抽取规则，
+# 但不再需要改 Python 代码：换一份 YAML 就能抽别的文档。
+
+name: LCFields
+description: 从信用证 PDF 中抽取的字段
+
+rules:
+  - lc_number 与 swift_dc_number 应交叉验证：两者一致说明解析与抽取都可靠。
+  - 文档中没有的字段填 null，不要编造。
+
+fields:
+  lc_number:
+    type: string
+    required: true
+    description: 信用证号码，例如 LC-831-984398
+    hints:
+      - 可能出现在银行通知书的表格里
+      - '也可能出现在 SWIFT 报文的 "20: Documentary Credit Number" 字段'
+
+  lc_amount:
+    type: string
+    required: true
+    description: 含币种的信用证金额，例如 USD1,269,720.00
+    hints:
+      - 必须包含币种，不要只写数字
+
+  lc_issuer:
+    type: string
+    required: true
+    description: 开证方（开证银行）名称，例如 RESONA BANK, LTD., TOKYO
+
+  swift_dc_number:
+    type: string
+    required: false
+    description: 'SWIFT 报文中 "20: Documentary Credit Number" 字段的值，通常与 lc_number 相同'
+
+  applicant:
+    type: string
+    required: false
+    description: 'SWIFT 报文中 "50: Applicant" 字段的值，即开证申请人名称和地址，例如 DAITO CO., LTD. 1-29 3CHOME KYUTAROMACHI CHUO-KU OSAKA 541-0056, JAPAN'

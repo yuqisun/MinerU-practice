@@ -1,0 +1,52 @@
+# 示例：同一套工具换一份配置，即可抽取商业发票字段（无需改任何 Python 代码）。
+
+name: InvoiceFields
+description: 从商业发票中抽取的字段
+
+rules:
+  - 金额必须包含币种。
+  - 日期统一写成 YYYY-MM-DD 格式。
+
+fields:
+  invoice_number:
+    type: string
+    required: true
+    description: 发票号码
+
+  invoice_date:
+    type: string
+    required: true
+    description: 开票日期
+    hints:
+      - 统一转换为 YYYY-MM-DD
+
+  seller:
+    type: string
+    required: true
+    description: 卖方名称
+    hints:
+      - 通常位于发票抬头或盖章处
+
+  buyer:
+    type: string
+    required: false
+    description: 买方名称
+
+  total_amount:
+    type: string
+    required: true
+    description: 含币种的发票总金额，例如 USD 1,234.56
+
+  currency:
+    type: string
+    required: false
+    description: 币种代码
+    enum: [USD, EUR, CNY, JPY]
+
+  item_names:
+    type: array
+    required: false
+    description: 商品名称列表
+    items:
+      type: string
+      description: 单个商品名称
